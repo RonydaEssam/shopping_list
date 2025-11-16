@@ -1,0 +1,26 @@
+# Tell GitHub to ignore these directories for language stats
+android/* linguist-vendored
+ios/* linguist-vendored
+windows/* linguist-vendored
+linux/* linguist-vendored
+macos/* linguist-vendored
+build/* linguist-vendored
+.dart_tool/* linguist-vendored
+
+# Optional: Mark specific file types as vendored
+*.java linguist-vendored
+*.kt linguist-vendored
+*.swift linguist-vendored
+*.m linguist-vendored
+*.h linguist-vendored
+*.cpp linguist-vendored
+*.c linguist-vendored
+*.cmake linguist-vendored
+*.gradle linguist-vendored
+*.plist linguist-vendored
+*.xml linguist-vendored
+
+# Force Dart to be detected for these files
+*.dart linguist-detectable
+pubspec.yaml linguist-detectable
+pubspec.lock linguist-detectable
