@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:shopping_list/models/category.dart';
+
+final categories = {
+  Categories.vegetables: Category(
+    name: 'Vegetables',
+    color: Color.fromARGB(225, 0, 255, 128),
+  ),
+  Categories.fruit: Category(
+    name: 'Fruit',
+    color: Color.fromARGB(255, 145, 255, 0),
+  ),
+  Categories.meat: Category(
+    name: 'Meat',
+    color: Color.fromARGB(255, 255, 102, 0),
+  ),
+  Categories.dairy: Category(
+    name: 'Dairy',
+    color: Color.fromARGB(255, 0, 208, 255),
+  ),
+  Categories.carb: Category(
+    name: 'Carbs',
+    color: Color.fromARGB(255, 0, 60, 255),
+  ),
+  Categories.sweets: Category(
+    name: 'Sweets',
+    color: Color.fromARGB(255, 255, 149, 0),
+  ),
+  Categories.spices: Category(
+    name: 'Spices',
+    color: Color.fromARGB(255, 255, 187, 0),
+  ),
+  Categories.hygiene: Category(
+    name: 'Hygiene',
+    color: Color.fromARGB(255, 149, 0, 255),
+  ),
+  Categories.other: Category(
+    name: 'Other',
+    color: Color.fromARGB(255, 0, 225, 255),
+  ),
+};
