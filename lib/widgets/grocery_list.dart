@@ -28,7 +28,7 @@ class _GroceryListState extends State<GroceryList> {
         actions: [
           IconButton(
             onPressed: _addItem,
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
       ),
@@ -36,7 +36,7 @@ class _GroceryListState extends State<GroceryList> {
         itemCount: groceryItem.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             child: ListTile(
               title: Text(groceryItem[index].name),
               leading: Container(
