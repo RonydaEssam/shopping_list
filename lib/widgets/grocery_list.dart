@@ -29,6 +29,70 @@ class _GroceryListState extends State<GroceryList> {
     }
   }
 
+  Widget content() {
+    if (_groceryItems.isEmpty) {
+      return Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Your grocery list is empty',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Try adding some items ...',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: _groceryItems.length,
+        itemBuilder: (context, index) {
+          return Dismissible(
+            key: ValueKey(_groceryItems[index].id),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) {
+              setState(() {
+                _groceryItems.remove(_groceryItems[index]);
+              });
+            },
+            background: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              child: Container(
+                alignment: Alignment.centerRight,
+                decoration: BoxDecoration(color: Colors.red),
+                child: Container(
+                  margin: EdgeInsets.only(right: 30),
+                  child: Icon(Icons.delete),
+                ),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              child: ListTile(
+                title: Text(_groceryItems[index].name),
+                leading: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: _groceryItems[index].category.color,
+                    shape: BoxShape.rectangle,
+                  ),
+                ),
+                trailing: Text(_groceryItems[index].quantity.toString()),
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,26 +106,7 @@ class _GroceryListState extends State<GroceryList> {
         ],
       ),
 
-      body: ListView.builder(
-        itemCount: _groceryItems.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-            child: ListTile(
-              title: Text(_groceryItems[index].name),
-              leading: Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: _groceryItems[index].category.color,
-                  shape: BoxShape.rectangle,
-                ),
-              ),
-              trailing: Text(_groceryItems[index].quantity.toString()),
-            ),
-          );
-        },
-      ),
+      body: content(),
     );
   }
 }
