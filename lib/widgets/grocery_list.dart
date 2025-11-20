@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:shopping_list/data/categories.dart';
+import 'package:shopping_list/models/category.dart';
 import 'package:shopping_list/models/grocery_item.dart';
 import 'package:shopping_list/widgets/new_item.dart';
 
@@ -19,6 +20,7 @@ class GroceryList extends StatefulWidget {
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems = [];
   var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -31,33 +33,53 @@ class _GroceryListState extends State<GroceryList> {
       'shopping-list-b0621-default-rtdb.firebaseio.com',
       'grocery-list.json',
     );
+    try {
+      final response = await http.get(url);
 
-    final response = await http.get(url);
-    final Map<String, dynamic> listData = json.decode(
-      response.body,
-    );
-    final List<GroceryItem> loadedItems = [];
-    for (final item in listData.entries) {
-      final category = categories.entries
-          .firstWhere(
-            (element) => element.value.name == item.value['category'],
-          )
-          .value;
-      loadedItems.add(
-        GroceryItem(
-          id: item.key,
-          name: item.value['name'],
-          quantity: item.value['quantity'],
-          category: category,
-        ),
-      );
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = 'Failed to fetch data, Please try again later';
+        });
+      }
+
+      if (response.body == "null") {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final Map<String, dynamic> listData = json.decode(response.body);
+      final List<GroceryItem> loadedItems = [];
+
+      for (final item in listData.entries) {
+        final category = categories.entries
+            .firstWhere(
+              (MapEntry<Categories, Category> element) =>
+                  element.value.name == item.value['category'],
+            )
+            .value;
+        loadedItems.add(
+          GroceryItem(
+            id: item.key,
+            name: item.value['name'],
+            quantity: item.value['quantity'],
+            category: category,
+          ),
+        );
+      }
+      setState(() {
+        _groceryItems = loadedItems;
+        _isLoading = false;
+      });
+
+      print(response.body);
+    } catch (error) {
+      setState(() {
+        _error = 'Failed to fetch data, Please try again later';
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _groceryItems = loadedItems;
-      _isLoading = false;
-    });
-
-    print(response.body);
   }
 
   void _addItem() async {
@@ -77,6 +99,12 @@ class _GroceryListState extends State<GroceryList> {
   }
 
   Widget content() {
+    if (_error != null) {
+      return Center(
+        child: Text(_error!),
+      );
+    }
+
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -109,13 +137,18 @@ class _GroceryListState extends State<GroceryList> {
           return Dismissible(
             key: ValueKey(_groceryItems[index].id),
             direction: DismissDirection.endToStart,
+
             onDismissed: (direction) {
               setState(() {
                 _groceryItems.remove(_groceryItems[index]);
               });
             },
+
             background: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 2,
+              ),
               child: Container(
                 alignment: Alignment.centerRight,
                 decoration: BoxDecoration(color: Colors.red),
@@ -125,8 +158,12 @@ class _GroceryListState extends State<GroceryList> {
                 ),
               ),
             ),
+
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 2,
+              ),
               child: ListTile(
                 title: Text(_groceryItems[index].name),
                 leading: Container(
