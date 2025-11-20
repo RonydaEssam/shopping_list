@@ -46,7 +46,17 @@ class _NewItemState extends State<NewItem> {
     if (!context.mounted) {
       return;
     }
-    Navigator.of(context).pop();
+
+    final Map<String, dynamic> respnseData = json.decode(response.body);
+
+    Navigator.of(context).pop(
+      GroceryItem(
+        id: respnseData['name'],
+        name: _enteredName,
+        quantity: _enteredQuantity,
+        category: _selectedCategory,
+      ),
+    );
 
     print(response.body);
     print(response.statusCode);
