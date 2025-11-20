@@ -21,6 +21,7 @@ class _NewItemState extends State<NewItem> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
+  var _isSending = false;
 
   void _saveItem() async {
     final isValid = _formKey.currentState!.validate();
@@ -30,6 +31,9 @@ class _NewItemState extends State<NewItem> {
     );
 
     if (isValid) {
+      setState(() {
+        _isSending = true;
+      });
       _formKey.currentState!.save();
     }
 
@@ -152,14 +156,18 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      _formKey.currentState!.reset();
-                    },
+                    onPressed: _isSending
+                        ? null
+                        : () {
+                            _formKey.currentState!.reset();
+                          },
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text('Add Item'),
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending
+                        ? const Text('Saving ...')
+                        : const Text('Add Item'),
                   ),
                 ],
               ),
