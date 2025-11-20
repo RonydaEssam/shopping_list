@@ -98,6 +98,30 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
+    final url = Uri.https(
+      'shopping-list-b0621-default-rtdb.firebaseio.com',
+      'grocery-list/${item.id}.json',
+    );
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode >= 400) {
+        throw Error();
+      }
+    } catch (err) {
+      setState(() {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed Deleting!')));
+        _groceryItems.insert(index, item);
+      });
+      return;
+    }
+  }
+
   Widget content() {
     if (_error != null) {
       return Center(
@@ -139,9 +163,7 @@ class _GroceryListState extends State<GroceryList> {
             direction: DismissDirection.endToStart,
 
             onDismissed: (direction) {
-              setState(() {
-                _groceryItems.remove(_groceryItems[index]);
-              });
+              _removeItem(_groceryItems[index]);
             },
 
             background: Padding(
