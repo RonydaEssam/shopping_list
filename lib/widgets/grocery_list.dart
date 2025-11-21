@@ -72,8 +72,6 @@ class _GroceryListState extends State<GroceryList> {
         _groceryItems = loadedItems;
         _isLoading = false;
       });
-
-      print(response.body);
     } catch (error) {
       setState(() {
         _error = 'Failed to fetch data, Please try again later';

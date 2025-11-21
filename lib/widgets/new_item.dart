@@ -61,9 +61,6 @@ class _NewItemState extends State<NewItem> {
         category: _selectedCategory,
       ),
     );
-
-    print(response.body);
-    print(response.statusCode);
   }
 
   @override
